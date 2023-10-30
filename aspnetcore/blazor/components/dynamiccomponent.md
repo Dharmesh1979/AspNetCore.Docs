@@ -1,21 +1,22 @@
 ---
 title: Dynamically-rendered ASP.NET Core Razor components
-author: daveabrock
+author: guardrex
 description: Learn how to use dynamically-rendered Razor components in Blazor apps.
 monikerRange: '>= aspnetcore-6.0'
 ms.author: riande
 ms.custom: mvc
-ms.date: 08/09/2021
-no-loc: [Home, Privacy, Kestrel, appsettings.json, "ASP.NET Core Identity", cookie, Cookie, Blazor, "Blazor Server", "Blazor WebAssembly", "Identity", "Let's Encrypt", Razor, SignalR]
+ms.date: 11/08/2022
 uid: blazor/components/dynamiccomponent
 ---
 # Dynamically-rendered ASP.NET Core Razor components
 
+[!INCLUDE[](~/includes/not-latest-version.md)]
+
 By [Dave Brock](https://twitter.com/daveabrock)
 
-Use the built-in `DynamicComponent` component to render components by type.
+Use the built-in <xref:Microsoft.AspNetCore.Components.DynamicComponent> component to render components by type.
 
-A `DynamicComponent` is useful for rendering components without iterating through possible types or using conditional logic. For example, `DynamicComponent` can render a component based on a user selection from a dropdown list.
+A <xref:Microsoft.AspNetCore.Components.DynamicComponent> is useful for rendering components without iterating through possible types or using conditional logic. For example, <xref:Microsoft.AspNetCore.Components.DynamicComponent> can render a component based on a user selection from a dropdown list.
 
 In the following example:
 
@@ -33,7 +34,7 @@ In the following example:
 
 For more information on passing parameter values, see the [Pass parameters](#pass-parameters) section later in this article.
 
-Use the `Instance` property to access the dynamically-created component instance:
+Use the <xref:Microsoft.AspNetCore.Components.DynamicComponent.Instance> property to access the dynamically-created component instance:
 
 ```razor
 <DynamicComponent Type="@typeof({COMPONENT})" @ref="dc" />
@@ -41,11 +42,11 @@ Use the `Instance` property to access the dynamically-created component instance
 <button @onclick="Refresh">Refresh</button>
 
 @code {
-    private DynamicComponent dc;
+    private DynamicComponent? dc;
 
     private Task Refresh()
     {
-        return (dc.Instance as IRefreshable)?.Refresh();
+        return (dc?.Instance as IRefreshable)?.Refresh();
     }
 }
 ```
@@ -61,236 +62,233 @@ In the following example, a Razor component renders a component based on the use
 
 | User spaceflight carrier selection | Shared Razor component to render    |
 | ---------------------------------- | ----------------------------------- |
-| Rocket Lab&reg;                    | `Shared/RocketLab.razor`            |
-| SpaceX&reg;                        | `Shared/SpaceX.razor`               |
-| ULA&reg;                           | `Shared/UnitedLaunchAlliance.razor` |
-| Virgin Galactic&reg;               | `Shared/VirginGalactic.razor`       |
+| Rocket Lab&reg;                    | `RocketLab.razor`            |
+| SpaceX&reg;                        | `SpaceX.razor`               |
+| ULA&reg;                           | `UnitedLaunchAlliance.razor` |
+| Virgin Galactic&reg;               | `VirginGalactic.razor`       |
 
-`Shared/RocketLab.razor`:
+:::moniker range=">= aspnetcore-7.0"
 
-```razor
-<h2>Rocket Lab&reg;</h2>
+`RocketLab.razor`:
 
-<p>
-    Rocket Lab is a registered trademark of 
-    <a href="https://www.rocketlabusa.com/">Rocket Lab USA Inc.</a>
-</p>
-```
+:::code language="razor" source="~/../blazor-samples/7.0/BlazorSample_WebAssembly/Shared/dynamiccomponent/RocketLab.razor":::
 
-`Shared/SpaceX.razor`:
+`SpaceX.razor`:
 
-```razor
-<h2>SpaceX&reg;</h2>
+:::code language="razor" source="~/../blazor-samples/7.0/BlazorSample_WebAssembly/Shared/dynamiccomponent/SpaceX.razor":::
 
-<p>
-    SpaceX is a registered trademark of 
-    <a href="https://www.spacex.com/">Space Exploration Technologies Corp.</a>
-</p>
-```
+`UnitedLaunchAlliance.razor`:
 
-`Shared/UnitedLaunchAlliance.razor`:
+:::code language="razor" source="~/../blazor-samples/7.0/BlazorSample_WebAssembly/Shared/dynamiccomponent/UnitedLaunchAlliance.razor":::
 
-```razor
-<h2>United Launch Alliance&reg;</h2>
+`VirginGalactic.razor`:
 
-<p>
-    United Launch Alliance and ULA are registered trademarks of
-    <a href="https://www.ulalaunch.com/">United Launch Alliance, LLC</a>.
-</p>
-```
+:::code language="razor" source="~/../blazor-samples/7.0/BlazorSample_WebAssembly/Shared/dynamiccomponent/VirginGalactic.razor":::
 
-`Shared/VirginGalactic.razor`:
+`DynamicComponentExample1.razor`:
 
-```razor
-<h2>Virgin Galactic&reg;</h2>
+:::code language="razor" source="~/../blazor-samples/7.0/BlazorSample_WebAssembly/Pages/dynamiccomponent/DynamicComponentExample1.razor":::
 
-<p>
-    Virgin Galactic is a registered trademark of 
-    <a href="https://www.virgingalactic.com/">Galactic Enterprises, LLC</a>.
-</p>
-```
+:::moniker-end
 
-`Pages/DynamicComponentExample1.razor`:
+:::moniker range="< aspnetcore-7.0"
 
-```razor
-@page "/dynamiccomponent-example-1"
+`RocketLab.razor`:
 
-<h1><code>DynamicComponent</code> Component Example 1</h1>
+:::code language="razor" source="~/../blazor-samples/6.0/BlazorSample_WebAssembly/Shared/dynamiccomponent/RocketLab.razor":::
 
-<p>
-    <label>
-        Select your transport:
-        <select @onchange="OnDropdownChange">
-            <option value="">Select a value</option>
-            <option value="@nameof(RocketLab)">Rocket Lab</option>
-            <option value="@nameof(SpaceX)">SpaceX</option>
-            <option value="@nameof(UnitedLaunchAlliance)">ULA</option>
-            <option value="@nameof(VirginGalactic)">Virgin Galactic</option>
-        </select>
-    </label>
-</p>
+`SpaceX.razor`:
 
-@if (selectedType is not null)
-{
-    <div class="border border-primary my-1 p-1">
-        <DynamicComponent Type="@selectedType" />
-    </div>
-}
+:::code language="razor" source="~/../blazor-samples/6.0/BlazorSample_WebAssembly/Shared/dynamiccomponent/SpaceX.razor":::
 
-@code {
-    private Type selectedType;
+`UnitedLaunchAlliance.razor`:
 
-    private void OnDropdownChange(ChangeEventArgs e)
-    {
-        selectedType = e.Value.ToString().Length > 0 ? 
-            Type.GetType($"{APP NAMESPACE}.Shared.{e.Value}") : null;
-    }
-}
-```
+:::code language="razor" source="~/../blazor-samples/6.0/BlazorSample_WebAssembly/Shared/dynamiccomponent/UnitedLaunchAlliance.razor":::
+
+`VirginGalactic.razor`:
+
+:::code language="razor" source="~/../blazor-samples/6.0/BlazorSample_WebAssembly/Shared/dynamiccomponent/VirginGalactic.razor":::
+
+`DynamicComponentExample1.razor`:
+
+:::code language="razor" source="~/../blazor-samples/6.0/BlazorSample_WebAssembly/Pages/dynamiccomponent/DynamicComponentExample1.razor":::
+
+:::moniker-end
 
 In the preceding example:
 
 * Component names are used as the option values using the [`nameof` operator](/dotnet/csharp/language-reference/operators/nameof), which returns component names as constant strings.
-* The `{APP NAMESPACE}` placeholder is the namespace of the app (for example, `BlazorSample`).
+* The namespace of the app is `BlazorSample`. ***Change the namespace to match your app's namespace.***
 
 ## Pass parameters
 
-If dynamically-rendered components have [component parameters](xref:blazor/components/index#component-parameters), pass them into the `DynamicComponent` as an `IDictionary<string, object>`. The `string` is the name of the parameter, and the `object` is the parameter's value.
+If dynamically-rendered components have [component parameters](xref:blazor/components/index#component-parameters), pass them into the <xref:Microsoft.AspNetCore.Components.DynamicComponent> as an `IDictionary<string, object>`. The `string` is the name of the parameter, and the `object` is the parameter's value.
 
 The following example configures a component metadata object (`ComponentMetadata`) to supply parameter values to dynamically-rendered components based on the type name. The example is just one of several approaches that you can adopt. Parameter data can also be provided from a web API, a database, or a method. The only requirement is that the approach returns an `IDictionary<string, object>`.
 
 `ComponentMetadata.cs`:
 
-```csharp
-using System;
-using System.Collections.Generic;
+:::moniker range=">= aspnetcore-7.0"
 
-public class ComponentMetadata
-{
-    public string Name { get; set; }
-    public Dictionary<string, object> Parameters { get; set; }
-}
-```
+:::code language="csharp" source="~/../blazor-samples/7.0/BlazorSample_Server/ComponentMetadata.cs":::
 
-In the following example, only the `RocketLab` component has a parameter, which assigns a value for a window seat (`WindowSeat`) on a spaceflight.
+:::moniker-end
 
-`Pages/DynamicComponentExample2.razor`:
+:::moniker range="< aspnetcore-7.0"
 
-```razor
-@page "/dynamiccomponent-example-2"
+:::code language="csharp" source="~/../blazor-samples/6.0/BlazorSample_Server/ComponentMetadata.cs":::
 
-<h1><code>DynamicComponent</code> Component Example 2</h1>
+:::moniker-end
 
-<p>
-    <label>
-        <input type="checkbox" @bind="WindowSeat" />
-        Window Seat (Rocket Lab only)
-    </label>
-</p>
+The following `RocketLabWithWindowSeat` component (`RocketLabWithWindowSeat.razor`) has been updated from the preceding example to include a component parameter named `WindowSeat` to specify if the passenger prefers a window seat on their flight:
 
-<p>
-    <label>
-        Select your transport:
-        <select @onchange="OnDropdownChange">
-            <option value="">Select a value</option>
-            @foreach (var c in components)
-            {
-                <option value="@c.Key">@c.Value.Name</option>
-            }
-        </select>
-    </label>
-</p>
+`RocketLabWithWindowSeat.razor`:
 
-@if (selectedType is not null)
-{
-    <div class="border border-primary my-1 p-1">
-        <DynamicComponent Type="@selectedType" 
-            Parameters="@components[selectedType.Name].Parameters" />
-    </div>
-}
+:::moniker range=">= aspnetcore-7.0"
 
-@code {
-    private Dictionary<string, ComponentMetadata> components =
-        new()
-        {
-            {
-                "RocketLab",
-                new ComponentMetadata
-                {
-                    Name = "Rocket Lab",
-                    Parameters = new() { { "WindowSeat", false } }
-                }
-            },
-            {
-                "VirginGalactic",
-                new ComponentMetadata { Name = "Virgin Galactic" }
-            },
-            {
-                "UnitedLaunchAlliance",
-                new ComponentMetadata { Name = "ULA" }
-            },
-            {
-                "SpaceX",
-                new ComponentMetadata { Name = "SpaceX" }
-            }
-        };
-    private Type selectedType;
-    private bool windowSeat;
+:::code language="razor" source="~/../blazor-samples/7.0/BlazorSample_WebAssembly/Shared/dynamiccomponent/RocketLabWithWindowSeat.razor" highlight="13-14":::
 
-    private bool WindowSeat
-    {
-        get { return windowSeat; }
-        set
-        {
-            windowSeat = value;
-            components[nameof(RocketLab)].Parameters["WindowSeat"] = windowSeat;
-        }
-    }
+:::moniker-end
 
-    private void OnDropdownChange(ChangeEventArgs e)
-    {
-        selectedType = e.Value.ToString().Length > 0 ? 
-            Type.GetType($"{APP NAMESPACE}.Shared.{e.Value}") : null;
-    }
-}
-```
+:::moniker range="< aspnetcore-7.0"
 
-In the preceding example:
+:::code language="razor" source="~/../blazor-samples/6.0/BlazorSample_WebAssembly/Shared/dynamiccomponent/RocketLabWithWindowSeat.razor" highlight="13-14":::
 
-* The `{APP NAMESPACE}` placeholder is the namespace of the app (for example, `BlazorSample`).
-* The dynamically-rendered components are shared components in the app's `Shared` folder:
-  * Shown in this article section: `RocketLab` (`Shared/RocketLab.razor`)
+:::moniker-end
+
+In the following example:
+
+* Only the `RocketLabWithWindowSeat` component's parameter for a window seat (`WindowSeat`) receives the value of the **`Window Seat`** checkbox.
+* The namespace of the app is `BlazorSample`. ***Change the namespace to match your app's namespace.***
+* The dynamically-rendered components are shared components:
+  * Shown in this article section: `RocketLabWithWindowSeat` (`RocketLabWithWindowSeat.razor`)
   * Components shown in the [Example](#example) section earlier in this article:
-    * `SpaceX` (`Shared/SpaceX.razor`)
-    * `UnitedLaunchAlliance` (`Shared/UnitedLaunchAlliance.razor`)
-    * `VirginGalactic` (`Shared/VirginGalactic.razor`)
+    * `SpaceX` (`SpaceX.razor`)
+    * `UnitedLaunchAlliance` (`UnitedLaunchAlliance.razor`)
+    * `VirginGalactic` (`VirginGalactic.razor`)
 
-The `RocketLab` component (`Shared/RocketLab.razor`) includes a component parameter named `WindowSeat`:
+`DynamicComponentExample2.razor`:
 
-`Shared/RocketLab.razor`:
+:::moniker range=">= aspnetcore-7.0"
 
-```razor
-<h2>Rocket Lab&reg;</h2>
+:::code language="razor" source="~/../blazor-samples/7.0/BlazorSample_WebAssembly/Pages/dynamiccomponent/DynamicComponentExample2.razor":::
 
-<p>
-    User selected a window seat: @WindowSeat
-</p>
+:::moniker-end
 
-<p>
-    Rocket Lab is a trademark of 
-    <a href="https://www.rocketlabusa.com/">Rocket Lab USA Inc.</a>
-</p>
+:::moniker range="< aspnetcore-7.0"
 
-@code {
-    [Parameter]
-    public bool WindowSeat { get; set; }
-}
-```
+:::code language="razor" source="~/../blazor-samples/6.0/BlazorSample_WebAssembly/Pages/dynamiccomponent/DynamicComponentExample2.razor":::
+
+:::moniker-end
+
+## Event callbacks (`EventCallback`)
+
+Event callbacks (<xref:Microsoft.AspNetCore.Components.EventCallback>) can be passed to a <xref:Microsoft.AspNetCore.Components.DynamicComponent> in its parameter dictionary.
+
+`ComponentMetadata.cs`:
+
+:::moniker range=">= aspnetcore-7.0"
+
+:::code language="csharp" source="~/../blazor-samples/7.0/BlazorSample_Server/ComponentMetadata.cs":::
+
+:::moniker-end
+
+:::moniker range="< aspnetcore-7.0"
+
+:::code language="csharp" source="~/../blazor-samples/6.0/BlazorSample_Server/ComponentMetadata.cs":::
+
+:::moniker-end
+
+Implement an event callback parameter (<xref:Microsoft.AspNetCore.Components.EventCallback>) within each dynamically-rendered component.
+
+`RocketLab2.razor`:
+
+:::moniker range=">= aspnetcore-7.0"
+
+:::code language="razor" source="~/../blazor-samples/7.0/BlazorSample_Server/Shared/dynamiccomponent/RocketLab2.razor":::
+
+:::moniker-end
+
+:::moniker range="< aspnetcore-7.0"
+
+:::code language="razor" source="~/../blazor-samples/6.0/BlazorSample_Server/Shared/dynamiccomponent/RocketLab2.razor":::
+
+:::moniker-end
+
+`SpaceX2.razor`:
+
+:::moniker range=">= aspnetcore-7.0"
+
+:::code language="razor" source="~/../blazor-samples/7.0/BlazorSample_Server/Shared/dynamiccomponent/SpaceX2.razor":::
+
+:::moniker-end
+
+:::moniker range="< aspnetcore-7.0"
+
+:::code language="razor" source="~/../blazor-samples/6.0/BlazorSample_Server/Shared/dynamiccomponent/SpaceX2.razor":::
+
+:::moniker-end
+
+`UnitedLaunchAlliance2.razor`:
+
+:::moniker range=">= aspnetcore-7.0"
+
+:::code language="razor" source="~/../blazor-samples/7.0/BlazorSample_Server/Shared/dynamiccomponent/UnitedLaunchAlliance2.razor":::
+
+:::moniker-end
+
+:::moniker range="< aspnetcore-7.0"
+
+:::code language="razor" source="~/../blazor-samples/6.0/BlazorSample_Server/Shared/dynamiccomponent/UnitedLaunchAlliance2.razor":::
+
+:::moniker-end
+
+`VirginGalactic2.razor`:
+
+:::moniker range=">= aspnetcore-7.0"
+
+:::code language="razor" source="~/../blazor-samples/7.0/BlazorSample_Server/Shared/dynamiccomponent/VirginGalactic2.razor":::
+
+:::moniker-end
+
+:::moniker range="< aspnetcore-7.0"
+
+:::code language="razor" source="~/../blazor-samples/6.0/BlazorSample_Server/Shared/dynamiccomponent/VirginGalactic2.razor":::
+
+:::moniker-end
+
+In the following parent component example, the `ShowDTMessage` method assigns a string with the current time to `message`, and the value of `message` is rendered.
+
+The parent component passes the callback method, `ShowDTMessage` in the parameter dictionary:
+
+* The `string` key is the callback method's name, `OnClickCallback`.
+* The `object` value is created by <xref:Microsoft.AspNetCore.Components.EventCallbackFactory.Create%2A?displayProperty=nameWithType> for the parent callback method, `ShowDTMessage`. Note that the [`this` keyword](/dotnet/csharp/language-reference/keywords/this) isn't supported in C# fields, so a C# property is used for the parameter dictionary.
+
+> [!IMPORTANT]
+> For the following `DynamicComponentExample3` component, modify the code in the `OnDropdownChange` method. Change the namespace name of "`BlazorSample`" in the `Type.GetType()` argument to match your app's namespace.
+
+`DynamicComponentExample3.razor`:
+
+:::moniker range=">= aspnetcore-7.0"
+
+:::code language="razor" source="~/../blazor-samples/7.0/BlazorSample_Server/Pages/dynamiccomponent/DynamicComponentExample3.razor":::
+
+:::moniker-end
+
+:::moniker range="< aspnetcore-7.0"
+
+:::code language="razor" source="~/../blazor-samples/6.0/BlazorSample_Server/Pages/dynamiccomponent/DynamicComponentExample3.razor":::
+
+:::moniker-end
 
 ## Avoid catch-all parameters
 
-Avoid the use of [catch-all parameters](xref:blazor/fundamentals/routing#catch-all-route-parameters). If catch-all parameters are used, every explicit parameter on `DynamicComponent` effectively is a reserved word that you can't pass to a dynamic child. Any new parameters passed to `DynamicComponent` are a breaking change, as they start shadowing child component parameters that happen to have the same name. It's unlikely that the caller always knows a fixed set of parameter names to pass to all possible dynamic children.
+Avoid the use of [catch-all parameters](xref:blazor/fundamentals/routing#catch-all-route-parameters). If catch-all parameters are used, every explicit parameter on <xref:Microsoft.AspNetCore.Components.DynamicComponent> effectively is a reserved word that you can't pass to a dynamic child. Any new parameters passed to <xref:Microsoft.AspNetCore.Components.DynamicComponent> are a breaking change, as they start shadowing child component parameters that happen to have the same name. It's unlikely that the caller always knows a fixed set of parameter names to pass to all possible dynamic children.
 
 ## Trademarks
 
 Rocket Lab is a registered trademark of [Rocket Lab USA Inc.](https://www.rocketlabusa.com/) SpaceX is a registered trademark of [Space Exploration Technologies Corp.](https://www.spacex.com/) United Launch Alliance and ULA are registered trademarks of [United Launch Alliance, LLC](https://www.ulalaunch.com/). Virgin Galactic is a registered trademark of [Galactic Enterprises, LLC](https://www.virgingalactic.com/).
+
+## Additional resources
+
+* <xref:blazor/components/event-handling#eventcallback>
